@@ -22,7 +22,7 @@ options:
     description:
     - The password for C(username) that is used when testing the initial
       connection.
-    - This is never saved with a mapped drive, use the M(community.windows.win_credential) module
+    - This is never saved with a mapped drive, use the M(ansible.windows.win_credential) module
       to persist a username and password for a host.
     type: str
   path:
@@ -50,12 +50,12 @@ options:
   username:
     description:
     - The username that is used when testing the initial connection.
-    - This is never saved with a mapped drive, the M(community.windows.win_credential) module
+    - This is never saved with a mapped drive, the M(ansible.windows.win_credential) module
       to persist a username and password for a host.
     - This is required if the mapped drive requires authentication with
       custom credentials and become, or CredSSP cannot be used.
     - If become or CredSSP is used, any credentials saved with
-      M(community.windows.win_credential) will automatically be used instead.
+      M(ansible.windows.win_credential) will automatically be used instead.
     type: str
 notes:
 - You cannot use this module to access a mapped drive in another Ansible task,
@@ -73,24 +73,24 @@ notes:
   Windows Server hosts need to install the C(WebDAV-Redirector) feature using
   M(ansible.windows.win_feature).
 seealso:
-- module: community.windows.win_credential
+- module: ansible.windows.win_credential
 author:
 - Jordan Borean (@jborean93)
 '''
 
 EXAMPLES = r'''
 - name: Create a mapped drive under Z
-  community.windows.win_mapped_drive:
+  ansible.windows.win_mapped_drive:
     letter: Z
     path: \\domain\appdata\accounting
 
 - name: Delete any mapped drives under Z
-  community.windows.win_mapped_drive:
+  ansible.windows.win_mapped_drive:
     letter: Z
     state: absent
 
 - name: Only delete the mapped drive Z if the paths match (error is thrown otherwise)
-  community.windows.win_mapped_drive:
+  ansible.windows.win_mapped_drive:
     letter: Z
     path: \\domain\appdata\accounting
     state: absent
@@ -98,7 +98,7 @@ EXAMPLES = r'''
 - name: Create mapped drive with credentials and save the username and password
   block:
     - name: Save the network credentials required for the mapped drive
-      community.windows.win_credential:
+      ansible.windows.win_credential:
         name: server
         type: domain_password
         username: username@DOMAIN
@@ -106,7 +106,7 @@ EXAMPLES = r'''
         state: present
 
     - name: Create a mapped drive that requires authentication
-      community.windows.win_mapped_drive:
+      ansible.windows.win_mapped_drive:
         letter: M
         path: \\SERVER\C$
         state: present
@@ -118,7 +118,7 @@ EXAMPLES = r'''
     ansible_become_pass: '{{ ansible_password }}'
 
 - name: Create mapped drive with credentials that do not persist on the next logon
-  community.windows.win_mapped_drive:
+  ansible.windows.win_mapped_drive:
     letter: M
     path: \\SERVER\C$
     state: present
@@ -137,7 +137,7 @@ EXAMPLES = r'''
   when: webdav_feature.reboot_required
 
 - name: Map the HTTPS WebDAV location
-  community.windows.win_mapped_drive:
+  ansible.windows.win_mapped_drive:
     letter: W
     path: \\live.sysinternals.com@SSL\tools  # https://live.sysinternals.com/tools
     state: present
